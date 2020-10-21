@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Three JS</title>
+    <script type="text/javascript" src="js/three.js"></script>
+<!--     <script type="text/javascript" src="js/OrbitControls.js"></script>
+    <script type="text/javascript" src="js/DragControls.js"></script>
+    <script type="text/javascript" src="js/PointerLockControls.js"></script> -->
+    <script type="text/javascript" src="js/TrackballControls.js"></script>
+</head>
+<body id="body">
+
+    <script type="text/javascript">
+                var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // create the shape
+        var geometry = new THREE.CubeGeometry(1, 1, 1); // size of box
+
+        //create material, color or image
+
+        var textureLoader = new THREE.TextureLoader();
+        var texture0 = textureLoader.load( 'images/cube1.jpg' ); //right
+        var texture1 = textureLoader.load( 'images/cube2.jpg' ); //left
+        var texture2 = textureLoader.load( 'images/cube3.jpg' ); //top
+        var texture3 = textureLoader.load( 'images/cube4.jpg' ); //bottom
+        var texture4 = textureLoader.load( 'images/cube5.jpg' ); //front
+        var texture5 = textureLoader.load( 'images/cube6.jpg' ); //back
+        var material = [
+            new THREE.MeshLambertMaterial({
+                map: texture0,
+                side: THREE.DoubleSide
+            }), //right
+            new THREE.MeshLambertMaterial({
+                map: texture1,
+                side: THREE.DoubleSide
+            }), //left
+            new THREE.MeshLambertMaterial({
+                map: texture2,
+                side: THREE.DoubleSide
+            }), //top
+            new THREE.MeshLambertMaterial({
+                map: texture3,
+                side: THREE.DoubleSide
+            }), //bottom
+            new THREE.MeshLambertMaterial({
+                map: texture4,
+                side: THREE.DoubleSide
+            }), //front
+            new THREE.MeshLambertMaterial({
+                map: texture5,
+                side: THREE.DoubleSide
+            }) //back
+        ];
+        var pointLight = new THREE.PointLight( 0xffffff, 1.5, 500 );
+        pointLight.position.set( 50, 50, 50 );
+
+        scene.add(pointLight);
+
+        var sphere = new THREE.Mesh(geometry, material);
+        sphere.castShadow = true; //default is false
+sphere.receiveShadow = false; //default
+        scene.add(sphere);
+
+        camera.position.z = 3;
+
+
+        //game login
+        var update = function() {
+
+        };
+
+        // draw scene
+        var render = function() {
+            renderer.render(scene, camera);
+        };
+
+        //run gameloop (update, render, repeat)
+        var GameLoop = function() {
+            requestAnimationFrame(GameLoop);
+            update();
+            render();
+            controls.update();
+        };
+
+// Just for fun
+scene.background = new THREE.Color( 'skyblue' );
+
+// drag control:
+controls = new THREE.TrackballControls(camera, renderer.domElement);
+GameLoop();
+
+    </script>
+</body>
+<style type="text/css">
+    body {
+        margin: 0;
+    }
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+</html>
