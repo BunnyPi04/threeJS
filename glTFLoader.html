@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Json Loader</title>
+    <title>GLTF Loader</title>
     <script type="text/javascript" src="js/three.js"></script>
     <script type="text/javascript" src="js/OrbitControls.js"></script>
     <script type="text/javascript" src="js/DragControls.js"></script>
     <script type="text/javascript" src="js/TrackballControls.js"></script>
-    <script type="text/javascript" src="js/ObjectLoader.js"></script>
+    <!-- <script type="text/javascript" src="js/GLTFLoader.js"></script> -->
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body id="body">
 
@@ -29,34 +30,24 @@
             camera.updateProjectionMatrix();
         });
 
-        camera.position.z = 7;
+        camera.position.z = 10;
+        camera.position.y = 40;
+        camera.position.x = -3;
 
-        var loader = new THREE.ObjectLoader( );
-
-        // load a resource
-        // loader.load
-        // (
-        //     // resource URL
-        //     'models/fox.json',
-        //     // Function when resource is loaded
-        //     function ( object )
-        //     {
-        //         scene.add( object );
-        //     }
-        // );
+        var loader = new THREE.GLTFLoader();
 
         loader.load(
             //model here
-            'models/teapot-claraio.json',
-
-            function(object) {
-                scene.add(object);
+            'models/scene.gltf',
+            (gltf) => {
+                const root = gltf.scene;
+                scene.add(root);
             }
         );
 
         var light = new THREE.DirectionalLight( 0xffffff );
-        light.position.set( 1, 1, 1 );
-        scene.add( light );
+        light.position.set(5, 50, 10);
+        scene.add(light);
 
         //game login
         var update = function() {};
