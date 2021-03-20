@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sky box</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
+    <script type="text/javascript" src="js/OrbitControls.js"></script>
+    <script type="text/javascript" src="js/DragControls.js"></script>
+    <script type="text/javascript" src="js/TrackballControls.js"></script>
+    <!-- <script type="text/javascript" src="js/ObjectLoader.js"></script> -->
+    <script type="text/javascript" src="js/CurveExtras.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js'></script>
+
+</head>
+<body id="body">
+
+    <script type="text/javascript">
+// /*        (
+//             function() {
+//                 var script = document.createElement('script');
+//                 script.onload = function() {
+//                     var stats = new Stats();
+//                     document.body.appendChild(stats.dom);
+//                     requestAnimationFrame(
+//                         function loop() {
+//                             stats.update();
+//                             requestAnimationFrame(loop)
+//                         }
+//                     );
+//                     var fpsPanel = addPanel(new Stats.Panel('FPS', '#0ff', '#002'));
+
+//                 };
+//                 script.src = '//mrdoob.github.io/stats.js/build/stats.min.js';
+//                 document.head.appendChild(script);
+//             }
+//         )() */
+
+//         var scene = new THREE.Scene();
+//         var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+//         var geometry = new THREE.CubeGeometry(10000, 10000, 10000); // size of box
+
+//         var cubeMaterial =
+//         [
+//             new THREE.MeshBasicMaterial({
+//                 map: new THREE.TextureLoader().load('images/DaylightBox/Front.bmp'),
+//                 side: THREE.DoubleSide
+//             }),
+//             new THREE.MeshBasicMaterial({
+//                 map: new THREE.TextureLoader().load('images/DaylightBox/Back.bmp'),
+//                 side: THREE.DoubleSide
+//             }),
+//             new THREE.MeshBasicMaterial({
+//                 map: new THREE.TextureLoader().load('images/DaylightBox/Top.bmp'),
+//                 side: THREE.DoubleSide
+//             }),
+//             new THREE.MeshBasicMaterial({
+//                 map: new THREE.TextureLoader().load('images/DaylightBox/Bottom.bmp'),
+//                 side: THREE.DoubleSide
+//             }),
+//             new THREE.MeshBasicMaterial({
+//                 map: new THREE.TextureLoader().load('images/DaylightBox/Right.bmp'),
+//                 side: THREE.DoubleSide
+//             }),
+//             new THREE.MeshBasicMaterial({
+//                 map: new THREE.TextureLoader().load('images/DaylightBox/Left.bmp'),
+//                 side: THREE.DoubleSide
+//             }),
+        
+//         ];
+
+//         var cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterial);
+//         var cube = new THREE.Mesh(geometry, cubeMaterial);
+//         // scene.add(cube);
+
+//         const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
+//         scene.add(ambient);
+
+//         var light = new THREE.AmbientLight(0xffffff, 0.3)
+//         scene.add(light);
+
+//         var renderer = new THREE.WebGLRenderer({antialias: true});
+//         renderer.setSize(window.innerWidth, window.innerHeight);
+//         document.body.appendChild(renderer.domElement);
+
+//         /* because when resize browser, no thing re-render => make your scene not resiz after resize browser
+//             So, after render dom Element, we need to watch the change of viewport
+//         */
+//         window.addEventListener('resize', function() {
+//             var width = window.innerWidth;
+//             var height = window.innerHeight;
+//             renderer.setSize(width, height);
+//             camera.aspect = width / height;
+//             camera.updateProjectionMatrix();
+//         });
+
+//         camera.position.z = -150;
+
+//         // light.position.set( 1, 1, 1 );
+
+//         var tube;
+
+//         function createTube(type){
+//             if (tube!==undefined) scene.remove(tube);
+//             const curve = new THREE.Curve[type]();
+//             const geometry = new THREE.TubeBufferGeometry( curve, 200, 3, 8, true );
+//             const material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xffffff});
+//             tube = new THREE.Mesh( geometry, material );
+
+//             scene.add(tube);
+//         }
+
+//         createTube('GrannyKnot');
+
+//         //game login
+//         var update = function() {};
+
+//         // draw scene
+//         var render = function() {
+//         // replace renderer render by effect render
+//             renderer.render(scene, camera);
+//         };
+
+//         //run gameloop (update, render, repeat)
+//         var GameLoop = function() {
+//             requestAnimationFrame(GameLoop);
+//             update();
+//             render();
+//             controls.update();
+//         };
+
+//         // for Trackball
+//         controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+
+//         GameLoop();
+
+//         scene.background = new THREE.Color( 'skyblue' );
+
+var scene, camera, renderer, controls, tube;
+
+init();
+
+function init(){
+  scene = new THREE.Scene();
+  
+  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
+  camera.position.set(0, 0, -150);
+  
+  const ambient = new THREE.HemisphereLight(0xffffbb, 0x080820);
+  scene.add(ambient);
+  
+  const light = new THREE.DirectionalLight(0xFFFFFF, 1);
+  light.position.set( 1, 10, 6);
+  scene.add(light);
+  
+  renderer = new THREE.WebGLRenderer({antialias: true});
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+  
+  //Add meshes hered
+  createTube('GrannyKnot');
+  
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  
+  const gui = new dat.GUI();
+  const options = {
+    type: 'GrannyKnot'
+  };
+  
+  gui.add(options, 'type', Object.keys(THREE.Curves)).onChange(value => createTube(value)
+  );
+    
+  window.addEventListener( 'resize', resize, false);
+  
+  update();
+}
+
+function createTube(type){
+  if (tube!==undefined) scene.remove(tube);
+  const curve = new THREE.Curves[type]();
+  const geometry = new THREE.TubeBufferGeometry( curve, 200, 3, 8, true );
+  const material = new THREE.MeshStandardMaterial({ wireframe:false, color: 0xffffff });
+  tube = new THREE.Mesh( geometry, material );
+  scene.add(tube);
+}
+
+function update(){
+  requestAnimationFrame( update );
+    renderer.render( scene, camera );  
+}
+
+function resize(){
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+}
+
+
+    </script>
+</body>
+<style type="text/css">
+    body {
+        margin: 0;
+    }
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+</html>

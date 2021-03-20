@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sky box</title>
+    <script type="text/javascript" src="js/three.js"></script>
+    <script type="text/javascript" src="js/OrbitControls.js"></script>
+    <script type="text/javascript" src="js/DragControls.js"></script>
+    <script type="text/javascript" src="js/TrackballControls.js"></script>
+    <script type="text/javascript" src="js/ObjectLoader.js"></script>
+</head>
+<body id="body">
+
+    <script type="text/javascript">
+
+        var scene = new THREE.Scene();
+
+        var playerCar = Car();
+        scene.add(playerCar);
+
+        // set up light
+        var ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        var dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        dirLight.position.set(100, -300, 400);
+        scene.add( dirLight );
+
+        // set up camera
+        var aspectRatio = window.innerWidth / window.innerHeight;
+        var cameraWidth = 150;
+        var cameraHeight = cameraWidth / aspectRatio;
+        var camera = new THREE.OrthographicCamera(
+            cameraWidth / -2, // left
+            cameraWidth / 2, // right
+            cameraHeight / -2, // top
+            cameraHeight / 2, // bottom
+            0, // near plane
+            1000 // far plane
+        );
+
+        camera.position.set(200, -200, 300);
+        camera.up.set(0, 0, 1);
+        camera.lookAt(0, 0, 0);
+
+        var renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        renderer.render(scene, camera);
+
+        document.body.appendChild(renderer.domElement);
+
+
+
+        function Car() {
+            const car = new THREE.Group();
+            var backWheel = new THREE.Mesh(
+                new THREE.BoxBufferGeometry(12, 33, 12),
+                new THREE.MeshLambertMaterial({color: 0x333333})
+            );
+
+
+            backWheel.position.z = 6;
+
+            // or just
+            // var backWheel = Wheel()
+
+            backWheel.position.x = -18;
+            car.add(backWheel);
+
+
+            var frontWheel = new THREE.Mesh(
+                new THREE.BoxBufferGeometry(12, 33, 12),
+                new THREE.MeshLambertMaterial({color: 0x333333,}),
+            );
+
+            frontWheel.position.z = 6;
+
+            // or just
+            // var frontWheel = Wheel()
+
+            frontWheel.position.x = 18;
+            car.add(frontWheel);
+
+            var main = new THREE.Mesh(
+                new THREE.BoxBufferGeometry(60, 30, 15),
+                new THREE.MeshLambertMaterial({color: 0xa52523,}),
+            );
+            main.position.z = 12;
+            car.add(main);
+
+            var cabin = new THREE.Mesh(
+                new THREE.BoxBufferGeometry(33, 24, 12),
+                new THREE.MeshLambertMaterial({color: 0xffffff,}),
+            );
+            cabin.position.z = 12;
+            car.add(cabin);
+
+
+            return car;
+        }
+
+        function Wheel() {
+            var wheel = new THREE.Mesh(
+                new THREE.BoxBufferGeometry(12, 33, 12),
+                new THREE.MeshLambertMaterial({color: 0x333333,}),
+            );
+
+            wheel.position.z = 6;
+
+            return wheel;
+        }
+
+        // random car color
+        function pickRandom(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        // define texture
+        function getCarSideTexture() {
+            var canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 32;
+
+            var context = canvas.getContext('2d');
+
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, 128, 32);
+
+            context.fillStyle = '#666666';
+            context.fillRect(10, 8, 38, 24);
+            context.fillRect(58, 8, 60, 24);
+
+            return new THREE.CanvasTexture(canvas);
+        }
+
+    </script>
+</body>
+<style type="text/css">
+    body {
+        margin: 0;
+    }
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+</html>
